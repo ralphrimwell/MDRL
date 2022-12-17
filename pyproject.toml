@@ -1,17 +1,7 @@
-[tool.poetry]
-name = "mdrl"
-version = "0.1.0"
-description = "Minimal Discord Rest Library"
-authors = ["Ralph Rimwell"]
-license = "MIT"
+[project]
+name = "MDRL"
+version = "0.0.1"
+description = "A Minimal Discord Rest Library"
 readme = "README.md"
 
-[tool.poetry.dependencies]
-python = "^3.10"
-aiohttp = "^3.8.3"
-asyncio = "^3.4.3"
 
-
-[build-system]
-requires = ["poetry-core"]
-build-backend = "poetry.core.masonry.api"
