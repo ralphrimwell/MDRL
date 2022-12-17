@@ -113,16 +113,6 @@ class Channel:
         if Permissions.send_messages in self.permissions:
             return await self._session.request("POST", f"channels/{self.id}/channels")
 
-# class Recipient:
-#     def __init__(self, id: str, username: str, avatar: str, avatar_decoration: str, discriminator: str, public_flags: list, bot: bool=False):
-#         self.id = id
-#         self.username = username
-#         self.avatar = avatar
-#         self.avatar_decoration = avatar_decoration
-#         self.discriminator = discriminator
-#         self.badges = Badges.calculate(public_flags)
-#         self.bot = bot
-
 class PrivateChannel:
     def __init__(self, session, raw_data:dict):
         self._session = session

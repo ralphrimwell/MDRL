@@ -1,4 +1,3 @@
-import array
 import asyncio
 import aiohttp
 import os
