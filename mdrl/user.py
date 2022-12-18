@@ -28,6 +28,17 @@ class ForeignUser(BaseUser):
     # async def message(self):
     #     return await self._session.request("POST", f"channels/{self.id}/channels")
 
+class GuildUser(BaseUser):
+    __slots__ = ('nick', 'roles', 'mute', 'deaf')
+
+    def __init__(self, raw_data:dict):
+        super().__init__(raw_data.get('user'))
+
+        self.nick = raw_data.get('nick')
+        self.roles = raw_data.get('roles')
+        self.mute = raw_data.get('mute')
+        self.deaf = raw_data.get('deaf')
+
 
 class ClientUser(BaseUser):
     __slots__ = ('billing', 'mfa_enabled', 'email', 'verified', 'phone', 'locale')

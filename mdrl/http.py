@@ -1,6 +1,7 @@
 import aiohttp
 import os 
 from dataclasses import dataclass
+import asyncio
 
 class Unauthorized(Exception):
     pass  
@@ -8,10 +9,9 @@ class Unauthorized(Exception):
 class Forbidden(Exception):
     pass  
 
-@dataclass
-class ResponseValue:
-    status_code: int = None
-    json: dict = None
+class RateLimit(Exception):
+    pass
+
 
 class HTTPClient:
     def __init__(self, token, proxy=None):
@@ -40,14 +40,15 @@ class HTTPClient:
         }
         return headers
 
-    async def request(self, method:str, path:str, payload:any=None) -> ResponseValue:
+    async def request(self, method:str, path:str, payload:any=None) -> dict:
         kwargs={}
         if self.proxy:
             kwargs['proxy'] = 'http://' + self.proxy
         if payload:
             kwargs['json'] = payload
-        async with self._session.request(method, self._baseurl + path, **kwargs) as resp:
+            
 
+        async with self._session.request(method, self._baseurl + path, **kwargs) as resp:
             if resp.status == 200:
                 return await resp.json()
             elif resp.status == 403:
@@ -55,5 +56,5 @@ class HTTPClient:
             elif resp.status == 401: 
                 raise Unauthorized("Token invalid")
             elif resp.status == 429:
-                pass
+                raise RateLimit("Token invalid")
 

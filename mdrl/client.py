@@ -2,10 +2,10 @@ import asyncio
 import aiohttp
 import os
 from .badges import Badges
-from .guild import Guild, GuildUser
+from .guild import Guild
 from .channel import Channel, PrivateChannel
 from .utils import snowflake_time
-from .user import ForeignUser, ClientUser, UserRelationships, RelationshipType
+from .user import ForeignUser, ClientUser, UserRelationships, RelationshipType, GuildUser
 from .http import HTTPClient
 
     
@@ -38,9 +38,10 @@ class DiscordClient:
         raw_guilds = await self._session.request("GET", "users/@me/guilds")
         guilds = []
         for guild in raw_guilds:
-            me = await self._session.request("GET", f"/users/@me/guilds/{guild['id']}/member")
-
-            guilds.append(Guild(self._session, guild, GuildUser(me)))
+            # me = await self._session.request("GET", f"/users/@me/guilds/{guild['id']}/member")
+            # if not me:
+            #     print('bp')
+            guilds.append(Guild(self._session, guild))
 
         return guilds
     

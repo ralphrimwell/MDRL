@@ -4,6 +4,8 @@ from dotenv import load_dotenv
 import os
 
 async def main():
+    """ Fetch all relationships, then print username of all friends """
+
     token = os.getenv('DISCORD_TOKEN')
 
     async with mdrl.DiscordClient() as client:

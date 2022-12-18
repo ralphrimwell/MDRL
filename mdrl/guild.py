@@ -1,10 +1,5 @@
 from enum import Enum
 from .channel import Channel
-
-class GuildUser:
-    def __init__(self, raw_data:dict):
-        self.roles = raw_data.get('roles')
-        self.id = raw_data['user'].get('id')
         
 class Guild:
     __slots__ = ('_session', 'me', 'id', 'name', 'permissions')
@@ -12,9 +7,8 @@ class Guild:
     def __str__(self):
         return self.name
 
-    def __init__(self, session, raw_data:dict, user:GuildUser):
+    def __init__(self, session, raw_data:dict):
         self._session = session
-        self.me = user
         self.id = raw_data.get('id')
         self.name = raw_data.get('name')
         self.permissions = raw_data.get('permissions')

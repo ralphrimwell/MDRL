@@ -2,6 +2,9 @@ from enum import Enum
 from .badges import Badges
 from .user import ForeignUser
 
+class ContentMissing(Exception):
+    pass
+
 class ChannelType(Enum):
     guild_text = 0
     dm = 1
@@ -129,5 +132,11 @@ class PrivateChannel:
     def __repr__(self):
         return f'<PrivateChannel id={self.id} recipients={len(self.recipients)}>'
 
-    async def message(self):
-        return await self._session.request("POST", f"channels/{self.id}/channels")
+    async def message(self, content):
+        if not content:
+            raise ContentMissing()
+
+        payload = {
+            'content': content
+        }
+        return await self._session.request("POST", f"channels/{self.id}/messages", payload=payload)
