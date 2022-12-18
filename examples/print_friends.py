@@ -20,6 +20,7 @@ async def main():
 
         for friend in relationships.friends:
             print(friend.username)
-
-load_dotenv()
-asyncio.run(main())
+            
+if __name__ == "__main__":
+    load_dotenv()
+    asyncio.run(main())

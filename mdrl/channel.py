@@ -99,6 +99,8 @@ class Permissions(Enum):
             
         
 class Channel:
+    __slots__ = ('_session', 'id', 'type', 'position', 'permissions', 'name', 'guild')
+
     def __init__(self, session, raw_data:dict, guild=None):
         self._session = session
 
@@ -109,18 +111,23 @@ class Channel:
         self.name = raw_data.get('name')
         self.guild = guild
 
+    def __repr__(self):
+        return f'<Channel id={self.id} name={self.name} type={self.type} position={self.position}>'
+
     async def message(self):
         if Permissions.send_messages in self.permissions:
             return await self._session.request("POST", f"channels/{self.id}/channels")
 
 class PrivateChannel:
+    __slots__ = ('_session', 'id', 'recipients')
+        
     def __init__(self, session, raw_data:dict):
         self._session = session
-
         self.id = raw_data.get('id')
-        self.recipients = []
-        for recipient in raw_data.get('recipients'):
-            self.recipients.append(ForeignUser(recipient))
+        self.recipients = [ ForeignUser(recipient, session) for recipient in raw_data.get('recipients')]
+
+    def __repr__(self):
+        return f'<PrivateChannel id={self.id} recipients={len(self.recipients)}>'
 
     async def message(self):
         return await self._session.request("POST", f"channels/{self.id}/channels")

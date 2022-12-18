@@ -1,31 +1,19 @@
 import asyncio
 import aiohttp
 import os
-from enum import Enum
-from .billing import Billing
 from .badges import Badges
 from .guild import Guild, GuildUser
 from .channel import Channel, PrivateChannel
 from .utils import snowflake_time
-from .user import ForeignUser, ClientUser
+from .user import ForeignUser, ClientUser, UserRelationships, RelationshipType
 from .http import HTTPClient
 
-            
-class RelationshipType(Enum):
-    friends = 1
-    blocked = 2
-    incoming_friend_requests = 3
-    outgoing_friend_requests = 4
-
-
-class UserRelationships:
-    def __init__(self):
-        self.friends: list[ForeignUser] = []
-        self.blocked: list[ForeignUser] = []
-        self.incoming_friend_requests: list[ForeignUser] = []
-        self.outgoing_friend_requests: list[ForeignUser] = []
     
 class DiscordClient:
+    def __repr__(self):
+        if self.user:
+            return self.user.__repr__()
+
     async def login(self, token: str, proxy=None):
         self.locale = 'en-GB' 
         self.token = token
@@ -68,7 +56,14 @@ class DiscordClient:
         raw_relationships = await self._session.request("GET", "users/@me/relationships")
         relationships = UserRelationships()
         for relationship in raw_relationships:
-            obj_type = getattr(relationships, RelationshipType(relationship.get('type')).name)
-            obj_type.append(ForeignUser(relationship.get('user'), self._session))
+            relationship_type = getattr(relationships, RelationshipType(relationship.get('type')).name)
+            relationship_type.append(ForeignUser(relationship.get('user'), self._session))
 
         return relationships
+    
+    async def create_private_channel(self, recipients: list[str]):
+        payload = {"recipients": recipients}
+        return PrivateChannel(self._session, await self._session.request("POST", "users/@me/channels", payload=payload))
+
+    async def delete_private_channel(self, id: str):
+        return await self._session.request("DELETE", f"users/@me/channels/{id}")
