@@ -4,6 +4,11 @@ from .billing import Billing
 from .http import HTTPClient
 from enum import Enum
 
+class Nitro(Enum):
+    nitro_classic = 1
+    nitro = 2
+    nitro_basic = 3
+
 class BaseUser:
     __slots__ = ('id', 'name', 'discrim', 'avatar', 'created_at', 'badges')
 
@@ -41,7 +46,7 @@ class GuildUser(BaseUser):
 
 
 class ClientUser(BaseUser):
-    __slots__ = ('billing', 'mfa_enabled', 'email', 'verified', 'phone', 'locale')
+    __slots__ = ('billing', 'mfa_enabled', 'email', 'verified', 'phone', 'locale', 'nitro')
 
     def __init__(self, raw_data:dict, session:HTTPClient):
         super().__init__(raw_data)
@@ -52,6 +57,7 @@ class ClientUser(BaseUser):
         self.verified =    raw_data.get('verified')
         self.phone =       raw_data.get('phone')
         self.locale =      raw_data.get('locale')
+        self.nitro =       None if not raw_data.get('premium_type') else Nitro(raw_data.get('premium_type'))
 
     def __repr__(self):
         return f'<ClientUser id={self.id} name={self.name + self.discrim} verified={self.verified}>'

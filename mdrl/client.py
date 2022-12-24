@@ -5,7 +5,7 @@ from .badges import Badges
 from .guild import Guild
 from .channel import Channel, PrivateChannel
 from .utils import snowflake_time
-from .user import ForeignUser, ClientUser, UserRelationships, RelationshipType, GuildUser
+from .user import ForeignUser, ClientUser, UserRelationships, RelationshipType
 from .http import HTTPClient
 
     
@@ -14,7 +14,7 @@ class DiscordClient:
         if self.user:
             return self.user.__repr__()
 
-    async def login(self, token: str, proxy=None):
+    async def login(self, token: str, proxy=None) -> ClientUser:
         self.locale = 'en-GB' 
         self.token = token
         self._session = HTTPClient(token, proxy)
@@ -22,6 +22,8 @@ class DiscordClient:
         self.user = await self._check_token()
         # for some reason discord doesnt return forbidden on login
         self.user.billing.payment_methods = await self.user.billing.get_payment_methods()
+
+        return self.user
 
     async def __aenter__(self):
         return self
