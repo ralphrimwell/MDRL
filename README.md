@@ -15,4 +15,4 @@ A minimal HTTP Discord API wrapper intended for self-botting
     
     - Headers generator, to allow for more random data
     
-    - Guild permissions calculator
+    - Guild permissions calculator (NOTE: probably should be avoided as you have to do so many requests (resulting in rate limiting) to get the required information, on connection to the websocket it returns basically all the information needed, so will probably only be implemented if websocket is implemented)
